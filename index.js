@@ -82,7 +82,7 @@ function secretText(newArray) {
 
 btn.addEventListener("click", (event) => {
   event.preventDefault();
-  const textField = document.getElementById("textField").value;
+  const textField = document.getElementById("textfield").value;
   const errorField = document.getElementById("error");
 
   if (textField === "") {
