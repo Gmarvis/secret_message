@@ -9,7 +9,7 @@ const normalizeText = (text) => {
 
 const newText = normalizeText(text);
 
-console.log(newText);
+// console.log(newText);
 
 function culumnAndRowslength(newText) {
   let N = newText.length;
@@ -20,7 +20,7 @@ function culumnAndRowslength(newText) {
   return [row, column];
 }
 
-console.log("this is culumns and rows: ", culumnAndRowslength(newText));
+// console.log("this is culumns and rows: ", culumnAndRowslength(newText));
 
 // split text
 const splitText = (newText, columns) => {
@@ -48,14 +48,14 @@ const splitText = (newText, columns) => {
   } else "String to short. Need at least 50 characters";
 };
 
-console.log(splitText(normalizeText(text), 7));
+// console.log(splitText(normalizeText(text), 7));
 
 //* function to convert split text into chunks strings
 function chunkToString(splitText) {
-  return splitText.join(`&nbsp;&nbsp;`);
+  return splitText.join(`&nbsp; <br/> &nbsp;`);
 }
 
-console.log(chunkToString(splitText(normalizeText(text), 7)));
+// console.log(chunkToString(splitText(normalizeText(text), 7)));
 
 // generate secret message
 function secretText(newArray) {
@@ -76,19 +76,50 @@ function secretText(newArray) {
   return temp.join("");
 }
 
-console.log("secret message: ", secretText(splitText(normalizeText(text), 7)));
+// console.log("secret message: ", secretText(splitText(normalizeText(text), 7)));
+
+// add action to encode message
 
 btn.addEventListener("click", (event) => {
   event.preventDefault();
   const textField = document.getElementById("textField").value;
+  const errorField = document.getElementById("error");
+
+  if (textField === "") {
+    errorField.innerText = "error! please input message...!";
+    textField = "";
+    return;
+  }
+
+  if (!textField.includes(" ")) {
+    errorField.innerText = "error! text should be more than one word...!";
+    textField = "";
+    return;
+  }
+
+  if (textField.length < 50) {
+    errorField.innerText = "error! text should be at least 50 characters...!";
+    return;
+  }
 
   const text = normalizeText(textField);
-  document.getElementById(
-    "nomalized"
-  ).innerHTML = ` <p> <strong> Normalized Text: </strong> <span>${text}</span></p>`;
+  document.getElementById("nomalized").innerText = text;
 
-    
+  const textInCulumnsAndRows = culumnAndRowslength(text);
 
-  console.log("textField: ", textField);
-  console.log("normalizeText: ", text);
+  const splitedText = splitText(text, textInCulumnsAndRows[1]);
+  const toChunck = chunkToString(splitedText);
+  document.getElementById("chucks").innerHTML = toChunck;
+
+  const secretmssg = secretText(splitedText);
+  document.getElementById("encoded").innerHTML = secretmssg;
+
+  // split the secret message
+  const splitSecretmsg = splitText(secretmssg, textInCulumnsAndRows[1]);
+  // chunt the splited message
+  const secretmssChunk = chunkToString(splitSecretmsg);
+  // add to the dom
+  document.getElementById("secret-chunck").innerHTML = secretmssChunk;
+
+  errorField.innerText = "";
 });
